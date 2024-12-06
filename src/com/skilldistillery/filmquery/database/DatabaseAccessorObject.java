@@ -87,8 +87,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	public List<Actor> findActorsByFilmId(int filmId) {
 		List<Actor> actors = new ArrayList<>();
 		try (Connection conn = DriverManager.getConnection(URL, user, pass)) {
-			String sqlText = "SELECT * FROM actor JOIN film_actor "
-					+ "ON actor.id = film_actor.actor_id "
+			String sqlText = "SELECT * FROM actor JOIN film_actor " + "ON actor.id = film_actor.actor_id "
 					+ "JOIN film ON film.id = film_actor.film_id WHERE film.id=?";
 			PreparedStatement stmt = conn.prepareStatement(sqlText);
 			stmt.setInt(1, filmId);
@@ -112,4 +111,46 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return null;
 	}
 
+	@Override
+	public List<Film> findFilmByKeyword(String keyword) {
+		List<Film> films = new ArrayList<>();
+		Film film = new Film();
+		try (Connection conn = DriverManager.getConnection(URL, user, pass)) {
+			String sqlText = "SELECT * FROM film WHERE title LIKE '%?% OR description LIKE '%?'";
+			PreparedStatement stmt = conn.prepareStatement(sqlText);
+			stmt.setString(1, keyword);
+			stmt.setString(2, keyword);
+			ResultSet filmResult = stmt.executeQuery();
+
+			while (filmResult.next()) {
+				film.setId(filmResult.getInt("id"));
+				film.setTitle(filmResult.getString("title"));
+				film.setDescription(filmResult.getString("description"));
+				film.setReleaseYear(filmResult.getInt("release_year"));
+				film.setLanguageId(filmResult.getInt("language_id"));
+				film.setLanguage(filmResult.getString("name"));
+				film.setRentalDuration(filmResult.getInt("rental_duration"));
+				film.setRentalRate(filmResult.getDouble("rental_rate"));
+				film.setLength(filmResult.getInt("length"));
+				film.setReplacementCost(filmResult.getDouble("replacement_cost"));
+				film.setRating(filmResult.getString("rating"));
+				film.setSpecialFeatures(filmResult.getString("special_features"));
+				film.setActors(findActorsByFilmId(filmResult.getInt("id")));
+				films.add(film);
+			}
+			return films;
+		}
+
+		catch (SQLException e) {
+			System.err.println("Error finding films with " + keyword);
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+//TODO: Override interface searchByKeyword method
+	// WHERE title LIKE '%?%' OR description LIKE '%?%'
+	// stmt.setString(1, "title");
+	// stmt.setString(2, "description");
+	// display LIST of films
 }

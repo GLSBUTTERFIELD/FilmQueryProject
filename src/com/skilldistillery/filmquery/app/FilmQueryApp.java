@@ -1,6 +1,6 @@
 package com.skilldistillery.filmquery.app;
 
-import java.util.List;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
@@ -14,8 +14,8 @@ public class FilmQueryApp {
 
 	public static void main(String[] args) {
 		FilmQueryApp app = new FilmQueryApp();
-		app.test();
-//    app.launch();
+//		app.test();
+		app.launch();
 	}
 
 	private void test() {
@@ -37,18 +37,83 @@ public class FilmQueryApp {
 	}
 
 	private void startUserInterface(Scanner input) {
+		boolean keepGoing = true;
+		System.out.println("Welcome to SD Vid!");
+		
+		while (keepGoing) {
+			displayUserMenu();
+		String userChoice = input.nextLine();
 
+		switch (userChoice) {
+		case "1":
+			System.out.println("\nPlease enter the film id: ");
+			int filmId = input.nextInt();
+			input.nextLine();
+			Film film = db.findFilmById(filmId);
+			displayFilmInfo(film);
+			keepGoing = true;
+			break;
+		
+		case "2":
+			System.out.println("\nPlease enter a keyword to search: ");
+			String keyword = input.nextLine();
+			
+			keepGoing = true;
+			break;
+			
+		case "3":
+			System.out.println("\nThanks for visiting SD Vid! Goodbye.");
+			keepGoing = false;
+			break;
+		
+		default: 
+			System.out.println("Invalid input.");
+			keepGoing = true;
+			break;
+		}
+		}
+		// TODO: IF statement - if null, print out "Film not found" or something
+		// TODO: act on user choice
+	}
+
+
+	private void displayUserMenu() {
+		System.out.println("..........................................");
+		System.out.println(".  What would you like to do today?      .");
+		System.out.println(".                                        .");
+		System.out.println(". 1. Look up a film by film id           .");
+		System.out.println(". 2. Look up a film by a search keyword  .");
+		System.out.println(". 3. Exit application                    .");
+		System.out.println(".                                        .");
+		System.out.println("..........................................");
 	}
 
 	private void displayFilmInfo(Film film) {
+		System.out.println(
+				"-----------------------------------------------------------------------------------------------");
 		System.out.println(film.getTitle() + " (" + film.getReleaseYear() + ") | " + film.getLanguage() + " | "
-		+ film.getLength() +" minutes | Rated " + film.getRating());
+				+ film.getLength() + " minutes | Rated " + film.getRating());
 		System.out.println("\n" + film.getDescription());
 		displayActorsInFilm(film);
 		System.out.println("\nSpecial Features: " + film.getSpecialFeatures());
-		System.out.println("\nFilm Id: " + film.getId() + " | Rental Rate: $" + film.getRentalRate() 
-		+ " | Rental Duration: " + film.getRentalDuration() + " days | Replacement Cost: $" + film.getReplacementCost());
-		System.out.println("-----------------------------------------------------------------------------------------------");
+		System.out.println(
+				"\nFilm Id: " + film.getId() + " | Rental Rate: $" + film.getRentalRate() + " | Rental Duration: "
+						+ film.getRentalDuration() + " days | Replacement Cost: $" + film.getReplacementCost());
+		System.out.println(
+				"-----------------------------------------------------------------------------------------------");
+	}
+	
+	private void displayFullFilmInfo(Film film) {
+		System.out.println(film.getTitle() + " (" + film.getReleaseYear() + ") | " + film.getLanguage() + " | "
+				+ film.getLength() + " minutes | Rated " + film.getRating());
+		System.out.println("\n" + film.getDescription());
+		displayActorsInFilm(film);
+		System.out.println("\nSpecial Features: " + film.getSpecialFeatures());
+		System.out.println(
+				"\nFilm Id: " + film.getId() + " | Rental Rate: $" + film.getRentalRate() + " | Rental Duration: "
+						+ film.getRentalDuration() + " days | Replacement Cost: $" + film.getReplacementCost());
+		System.out.println(
+				"-----------------------------------------------------------------------------------------------");
 	}
 
 	private void displayActorInfo(Actor actor) {
