@@ -17,6 +17,7 @@ public class Film {
 	private String rating;
 	private String specialFeatures;
 	private List<Actor> actors;
+	private String category;
 	
 	public Film() {
 	}
@@ -163,10 +164,18 @@ public class Film {
 		this.language = language;
 	}
 
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(actors, description, id, language, languageId, length, rating, releaseYear, rentalDuration,
-				rentalRate, replacementCost, specialFeatures, title);
+		return Objects.hash(actors, category, description, id, language, languageId, length, rating, releaseYear,
+				rentalDuration, rentalRate, replacementCost, specialFeatures, title);
 	}
 
 	@Override
@@ -178,7 +187,8 @@ public class Film {
 		if (getClass() != obj.getClass())
 			return false;
 		Film other = (Film) obj;
-		return Objects.equals(actors, other.actors) && Objects.equals(description, other.description) && id == other.id
+		return Objects.equals(actors, other.actors) && Objects.equals(category, other.category)
+				&& Objects.equals(description, other.description) && id == other.id
 				&& Objects.equals(language, other.language) && languageId == other.languageId && length == other.length
 				&& Objects.equals(rating, other.rating) && releaseYear == other.releaseYear
 				&& rentalDuration == other.rentalDuration
@@ -192,9 +202,9 @@ public class Film {
 		return "Film [id=" + id + ", title=" + title + ", description=" + description + ", releaseYear=" + releaseYear
 				+ ", languageId=" + languageId + ", language=" + language + ", rentalDuration=" + rentalDuration
 				+ ", rentalRate=" + rentalRate + ", length=" + length + ", replacementCost=" + replacementCost
-				+ ", rating=" + rating + ", specialFeatures=" + specialFeatures + ", actors=" + actors + "]";
+				+ ", rating=" + rating + ", specialFeatures=" + specialFeatures + ", actors=" + actors + ", category="
+				+ category + "]";
 	}
 
 	
-
 }
