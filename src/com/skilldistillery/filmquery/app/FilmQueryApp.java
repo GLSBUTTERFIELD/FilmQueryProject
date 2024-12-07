@@ -85,12 +85,19 @@ public class FilmQueryApp {
 		}
 	}
 
+	
 	private void case2(Scanner input) {
 		System.out.println("\nPlease enter a keyword to search: ");
 		String keyword = input.nextLine();
 		System.out.println("\nFilms containing \"" + keyword + "\": ");
 		List<Film> films = db.findFilmByKeyword(keyword);
 		displayMultipleFilms(films);
+		if (films.isEmpty()) {
+			return;
+		}
+		filmSubMenu();
+		String choice = input.nextLine();
+		subMenuChoice(choice, films);
 	}
 
 	private void subMenuChoice(String choice, Film film) {
@@ -105,6 +112,20 @@ public class FilmQueryApp {
 		}
 	}
 
+	private void subMenuChoice(String choice, List<Film> films) {
+		switch (choice) {
+		case "1":
+			break;
+		case "2":
+			for (Film film : films) {
+				displayFullFilmInfo(film);
+			}
+			break;
+		default:
+			System.out.println("Invalid input.");
+		}
+	}
+	
 	private void displayUserMenu() {
 		System.out.println("..........................................");
 		System.out.println(".  What would you like to do today?      .");
