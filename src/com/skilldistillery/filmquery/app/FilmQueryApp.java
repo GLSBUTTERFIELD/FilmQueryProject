@@ -46,27 +46,12 @@ public class FilmQueryApp {
 
 			switch (userChoice) {
 			case "1":
-				System.out.println("\nPlease enter the film id: ");
-				int filmId = input.nextInt();
-				input.nextLine();
-				Film film = db.findFilmById(filmId);
-				
-				if (film == null) {
-					System.out.println("\nFilm not found.\n");
-				} else {
-				System.out.println(film);
-					displayFilmInfo(film);
-				
-				}
+				case1(input);
 				keepGoing = true;
 				break;
 
 			case "2":
-				System.out.println("\nPlease enter a keyword to search: ");
-				String keyword = input.nextLine();
-				System.out.println("\nFilms containing \"" + keyword + "\": ");
-				List<Film> films = db.findFilmByKeyword(keyword);
-				displayMultipleFilms(films);
+				case2(input);
 				keepGoing = true;
 				break;
 
@@ -78,8 +63,45 @@ public class FilmQueryApp {
 			default:
 				System.out.println("Invalid input.\n");
 				keepGoing = true;
-				break;
 			}
+		}
+	}
+
+	private void case1(Scanner input) {
+		System.out.println("\nPlease enter the film id: ");
+		int filmId = input.nextInt();
+		input.nextLine();
+		Film film = db.findFilmById(filmId);
+
+		if (film == null) {
+			System.out.println("\nFilm not found.\n");
+		}
+
+		else {
+			displayFilmInfo(film);
+			filmSubMenu();
+			String choice = input.nextLine();
+			subMenuChoice(choice, film);
+		}
+	}
+
+	private void case2(Scanner input) {
+		System.out.println("\nPlease enter a keyword to search: ");
+		String keyword = input.nextLine();
+		System.out.println("\nFilms containing \"" + keyword + "\": ");
+		List<Film> films = db.findFilmByKeyword(keyword);
+		displayMultipleFilms(films);
+	}
+
+	private void subMenuChoice(String choice, Film film) {
+		switch (choice) {
+		case "1":
+			break;
+		case "2":
+			displayFullFilmInfo(film);
+			break;
+		default:
+			System.out.println("Invalid input.");
 		}
 	}
 
@@ -115,6 +137,8 @@ public class FilmQueryApp {
 	}
 
 	private void displayFullFilmInfo(Film film) {
+		System.out.println(
+				"------------------------------------------------------------------------------------------------------");
 		System.out.println(film.getTitle() + " (" + film.getReleaseYear() + ") | " + film.getLanguage() + " | "
 				+ film.getLength() + " minutes | Rated " + film.getRating());
 		System.out.println("\n" + film.getDescription());
@@ -124,7 +148,7 @@ public class FilmQueryApp {
 				"\nFilm Id: " + film.getId() + " | Rental Rate: $" + film.getRentalRate() + " | Rental Duration: "
 						+ film.getRentalDuration() + " days | Replacement Cost: $" + film.getReplacementCost());
 		System.out.println(
-				"-----------------------------------------------------------------------------------------------");
+				"------------------------------------------------------------------------------------------------------");
 	}
 
 	private void displayActorInfo(Actor actor) {
@@ -136,5 +160,10 @@ public class FilmQueryApp {
 		for (Actor actor : film.getActors()) {
 			System.out.println("- " + actor.getFirstName() + " " + actor.getLastName());
 		}
+	}
+
+	private void filmSubMenu() {
+		System.out.println("Enter 1 to return to the main menu.");
+		System.out.println("Enter 2 to see full film details.");
 	}
 }
