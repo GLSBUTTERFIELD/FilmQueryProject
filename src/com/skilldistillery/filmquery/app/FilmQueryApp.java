@@ -52,9 +52,11 @@ public class FilmQueryApp {
 				Film film = db.findFilmById(filmId);
 				
 				if (film == null) {
-					System.out.println("Film not found.");
+					System.out.println("\nFilm not found.\n");
 				} else {
+				System.out.println(film);
 					displayFilmInfo(film);
+				
 				}
 				keepGoing = true;
 				break;
@@ -74,7 +76,7 @@ public class FilmQueryApp {
 				break;
 
 			default:
-				System.out.println("Invalid input.");
+				System.out.println("Invalid input.\n");
 				keepGoing = true;
 				break;
 			}

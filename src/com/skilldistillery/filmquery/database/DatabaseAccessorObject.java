@@ -27,7 +27,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 	@Override
 	public Film findFilmById(int filmId) {
-		Film film = new Film();
+		Film film = null;
 
 		try (Connection conn = DriverManager.getConnection(URL, user, pass)) {
 			String sqlText = "SELECT * FROM film JOIN language ON film.language_id = language.id WHERE film.id=?";
@@ -36,6 +36,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			ResultSet filmResult = stmt.executeQuery();
 
 			if (filmResult.next()) {
+				film = new Film();
 				film.setId(filmResult.getInt("id"));
 				film.setTitle(filmResult.getString("title"));
 				film.setDescription(filmResult.getString("description"));
@@ -50,14 +51,13 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setSpecialFeatures(filmResult.getString("special_features"));
 				film.setActors(findActorsByFilmId(filmId));
 			}
-			return film;
 		}
 
 		catch (SQLException e) {
 			System.err.println("Error getting film " + filmId);
 			e.printStackTrace();
 		}
-		return null;
+		return film;
 	}
 
 	@Override
