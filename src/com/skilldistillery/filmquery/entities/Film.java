@@ -18,28 +18,18 @@ public class Film {
 	private String specialFeatures;
 	private List<Actor> actors;
 	private String category;
+	private int storeId;
+	private int inventoryId;
+	private String mediaCondition;
+	private List<Film> inventoryCondition;
 	
 	public Film() {
-	}
-
-	public Film(int id, String title, String description, int releaseYear, int languageId, int rentalDuration,
-			double rentalRate, int length, double replacementCost, String rating, String specialFeatures) {
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.releaseYear = releaseYear;
-		this.languageId = languageId;
-		this.rentalDuration = rentalDuration;
-		this.rentalRate = rentalRate;
-		this.length = length;
-		this.replacementCost = replacementCost;
-		this.rating = rating;
-		this.specialFeatures = specialFeatures;
 	}
 	
 	public Film(int id, String title, String description, int releaseYear, int languageId, String language,
 			int rentalDuration, double rentalRate, int length, double replacementCost, String rating,
-			String specialFeatures, List<Actor> actors) {
+			String specialFeatures, List<Actor> actors, String category, int storeId, int inventoryId,
+			String mediaCondition) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -54,6 +44,10 @@ public class Film {
 		this.rating = rating;
 		this.specialFeatures = specialFeatures;
 		this.actors = actors;
+		this.category = category;
+		this.storeId = storeId;
+		this.inventoryId = inventoryId;
+		this.mediaCondition = mediaCondition;
 	}
 
 	public List<Actor> getActors() {
@@ -172,10 +166,43 @@ public class Film {
 		this.category = category;
 	}
 
+	public int getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(int storeId) {
+		this.storeId = storeId;
+	}
+
+	public int getInventoryId() {
+		return inventoryId;
+	}
+
+	public void setInventoryId(int inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
+	public String getMediaCondition() {
+		return mediaCondition;
+	}
+
+	public void setMediaCondition(String mediaCondition) {
+		this.mediaCondition = mediaCondition;
+	}
+
+	public List<Film> getInventoryCondition() {
+		return inventoryCondition;
+	}
+	
+	public void setInventoryCondition(List<Film> inventoryCondition) {
+		this.inventoryCondition = inventoryCondition;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(actors, category, description, id, language, languageId, length, rating, releaseYear,
-				rentalDuration, rentalRate, replacementCost, specialFeatures, title);
+		return Objects.hash(actors, category, description, id, inventoryCondition, inventoryId, language, languageId,
+				length, mediaCondition, rating, releaseYear, rentalDuration, rentalRate, replacementCost,
+				specialFeatures, storeId, title);
 	}
 
 	@Override
@@ -189,12 +216,14 @@ public class Film {
 		Film other = (Film) obj;
 		return Objects.equals(actors, other.actors) && Objects.equals(category, other.category)
 				&& Objects.equals(description, other.description) && id == other.id
+				&& Objects.equals(inventoryCondition, other.inventoryCondition) && inventoryId == other.inventoryId
 				&& Objects.equals(language, other.language) && languageId == other.languageId && length == other.length
-				&& Objects.equals(rating, other.rating) && releaseYear == other.releaseYear
-				&& rentalDuration == other.rentalDuration
+				&& Objects.equals(mediaCondition, other.mediaCondition) && Objects.equals(rating, other.rating)
+				&& releaseYear == other.releaseYear && rentalDuration == other.rentalDuration
 				&& Double.doubleToLongBits(rentalRate) == Double.doubleToLongBits(other.rentalRate)
 				&& Double.doubleToLongBits(replacementCost) == Double.doubleToLongBits(other.replacementCost)
-				&& Objects.equals(specialFeatures, other.specialFeatures) && Objects.equals(title, other.title);
+				&& Objects.equals(specialFeatures, other.specialFeatures) && storeId == other.storeId
+				&& Objects.equals(title, other.title);
 	}
 
 	@Override
@@ -203,8 +232,9 @@ public class Film {
 				+ ", languageId=" + languageId + ", language=" + language + ", rentalDuration=" + rentalDuration
 				+ ", rentalRate=" + rentalRate + ", length=" + length + ", replacementCost=" + replacementCost
 				+ ", rating=" + rating + ", specialFeatures=" + specialFeatures + ", actors=" + actors + ", category="
-				+ category + "]";
+				+ category + ", storeId=" + storeId + ", inventoryId=" + inventoryId + ", mediaCondition="
+				+ mediaCondition + ", inventoryCondition=" + inventoryCondition + "]";
 	}
-
+	
 	
 }

@@ -36,7 +36,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 					+ "category.name AS 'category' "
 					+ "FROM film JOIN language ON film.language_id = language.id "
 					+ "JOIN film_category ON film.id = film_category.film_id "
-					+ "JOIN category ON category_id = category.id WHERE film.id=?";
+					+ "JOIN category ON category_id = category.id "
+					+ "WHERE film.id=?";
 			PreparedStatement stmt = conn.prepareStatement(sqlText);
 			stmt.setInt(1, filmId);
 			ResultSet filmResult = stmt.executeQuery();
@@ -57,7 +58,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setSpecialFeatures(filmResult.getString("special_features"));
 				film.setActors(findActorsByFilmId(filmId));
 				film.setCategory(filmResult.getString("category"));
-
+				film.setInventoryCondition(getInventoryCondition(filmId));
 			}
 		}
 
@@ -82,13 +83,12 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				actor.setLastName(actorResult.getString("last_name"));
 				actor.setId(actorResult.getInt("id"));
 			}
-			return actor;
 		}
 
 		catch (SQLException e) {
 			System.err.println(e);
 		}
-		return null;
+		return actor;
 	}
 
 	@Override
@@ -108,7 +108,6 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				actor.setId(rs.getInt("id"));
 				actors.add(actor);
 			}
-			return actors;
 		}
 
 		catch (SQLException e) {
@@ -116,7 +115,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			e.printStackTrace();
 		}
 
-		return null;
+		return actors;
 	}
 
 	@Override
@@ -163,4 +162,27 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return films;
 	}
 
+	public List<Film> getInventoryCondition (int filmId) {
+		List<Film> filmInventory = new ArrayList<>();
+		try (Connection conn = DriverManager.getConnection(URL, user, pass)) {
+			String sqlText = "SELECT * FROM inventory_item WHERE film_id=?";
+			PreparedStatement stmt = conn.prepareStatement(sqlText);
+			stmt.setInt(1, filmId);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Film film = new Film();
+				film.setStoreId(rs.getInt("store_id"));
+				film.setMediaCondition(rs.getString("media_condition"));
+				filmInventory.add(film);
+			}
+		}
+
+		catch (SQLException e) {
+			System.err.println("Error finding inventory information for " + filmId);
+			e.printStackTrace();
+		}
+
+		return filmInventory;
+	}
 }
