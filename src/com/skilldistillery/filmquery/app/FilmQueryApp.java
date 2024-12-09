@@ -85,20 +85,19 @@ public class FilmQueryApp {
 		} catch (InputMismatchException ime) {
 			System.out.println("Invalid input.\n");
 			input.nextLine();
-
 		}
-
 	}
 
 	private void case2(Scanner input) {
 		System.out.println("\nPlease enter a keyword to search: ");
 		String keyword = input.nextLine();
-		System.out.println("\nFilms containing \"" + keyword + "\": ");
 		List<Film> films = db.findFilmByKeyword(keyword);
-		displayMultipleFilms(films);
 		if (films.isEmpty()) {
+			System.out.println("\nThere are no films containing the keyword " + keyword + ".\n");
 			return;
 		}
+		System.out.println("\nFilms containing \"" + keyword + "\": ");
+		displayMultipleFilms(films);
 		filmSubMenu();
 		String choice = input.nextLine();
 		subMenuChoice(choice, films);
@@ -110,6 +109,7 @@ public class FilmQueryApp {
 			break;
 		case "2":
 			displayFullFilmInfo(film);
+			displayInventoryAndCondition(film);
 			break;
 		}
 	}
@@ -120,8 +120,11 @@ public class FilmQueryApp {
 			break;
 		case "2":
 			for (Film film : films) {
-				displayFullFilmInfo(film);
+				displayFullFilmInfo(film);					
+				displayInventoryAndCondition(films);
 			}
+			System.out.println(
+					"------------------------------------------------------------------------------------------------------");
 			break;
 		default:
 			System.out.println("Invalid input.");
@@ -151,9 +154,6 @@ public class FilmQueryApp {
 	}
 
 	private void displayMultipleFilms(List<Film> films) {
-		if (films.isEmpty()) {
-			System.out.println("\nThere are no films containing your keyword.\n");
-		}
 		for (Film film : films) {
 			displayFilmInfo(film);
 		}
@@ -170,12 +170,11 @@ public class FilmQueryApp {
 		System.out.println(
 				"\nFilm Id: " + film.getId() + " | Rental Rate: $" + film.getRentalRate() + " | Rental Duration: "
 						+ film.getRentalDuration() + " days | Replacement Cost: $" + film.getReplacementCost());
-		displayInventoryAndCondition(film);
-		System.out.println(
-				"------------------------------------------------------------------------------------------------------");
+//		displayInventoryAndCondition(film);
 	}
-
-	private void displayActorInfo(Actor actor) {
+	
+	
+ 	private void displayActorInfo(Actor actor) {
 		System.out.println(actor.getFirstName() + " " + actor.getLastName() + " | Actor Id: " + actor.getId());
 	}
 
@@ -186,14 +185,25 @@ public class FilmQueryApp {
 		}
 	}
 	
-	private void displayInventoryAndCondition (Film films) {
-		System.out.println("\nFilm Inventory & Condition\n"); 
-		for (Film film : films.getInventoryCondition()) {
+	private void displayInventoryAndCondition (Film indFilm) {
+		System.out.println("\nInventory & Condition\n"); 
+		for (Film film : indFilm.getInventoryCondition()) {
+			System.out.println("Store Id: " + film.getStoreId() + " | Media Condition: "
+					+ film.getMediaCondition());
+		}
+		System.out.println(
+				"------------------------------------------------------------------------------------------------------");
+	}
+	
+	
+	private void displayInventoryAndCondition (List<Film> films) {
+		System.out.println("\nInventory & Condition\n"); 
+			for (Film film : films) {
 			System.out.println("Store Id: " + film.getStoreId() + " | Media Condition: "
 					+ film.getMediaCondition());
 		}
 	}
-
+	
 	private void filmSubMenu() {
 		System.out.println("\nEnter \"1\" to return to the main menu.");
 		System.out.println("Enter \"2\" to see all film details.");

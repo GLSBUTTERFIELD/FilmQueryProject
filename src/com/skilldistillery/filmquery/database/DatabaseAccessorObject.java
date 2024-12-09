@@ -122,7 +122,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	public List<Film> findFilmByKeyword(String keyword) {
 		List<Film> films = new ArrayList<>();
 		try (Connection conn = DriverManager.getConnection(URL, user, pass)) {
-			String sqlText = "SELECT film.id, title, description, release_year, "
+			String sqlText = "SELECT film.id AS 'film id', title, description, release_year, "
 					+ "language_id, language.name AS 'language', rental_duration, "
 					+ "rental_rate, length, replacement_cost, rating, special_features, "
 					+ "category.name AS 'category' "
@@ -137,7 +137,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 			while (filmResult.next()) {
 				Film film = new Film();
-				film.setId(filmResult.getInt("id"));
+				film.setId(filmResult.getInt("film id"));
 				film.setTitle(filmResult.getString("title"));
 				film.setDescription(filmResult.getString("description"));
 				film.setReleaseYear(filmResult.getInt("release_year"));
@@ -149,8 +149,9 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setReplacementCost(filmResult.getDouble("replacement_cost"));
 				film.setRating(filmResult.getString("rating"));
 				film.setSpecialFeatures(filmResult.getString("special_features"));
-				film.setActors(findActorsByFilmId(filmResult.getInt("id")));
+				film.setActors(findActorsByFilmId(filmResult.getInt("film id")));
 				film.setCategory(filmResult.getString("category"));
+				film.setInventoryCondition(getInventoryCondition(filmResult.getInt("film id")));
 				films.add(film);
 			}
 		}
@@ -162,10 +163,58 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return films;
 	}
 
+	
+//	public List<Film> findFilmAndInventoryByKeyword(String keyword) {
+//		List<Film> films = new ArrayList<>();
+//		try (Connection conn = DriverManager.getConnection(URL, user, pass)) {
+//			String sqlText = "SELECT film.id AS 'film id', title, description, release_year, "
+//					+ "language_id, language.name AS 'language', rental_duration, "
+//					+ "rental_rate, length, replacement_cost, rating, special_features, "
+//					+ "category.name AS 'category', store_id, media_condition "
+//					+ "FROM film JOIN language ON film.language_id = language.id "
+//					+ "JOIN film_category ON film.id = film_category.film_id "
+//					+ "JOIN category ON category_id = category.id "
+//					+ "JOIN inventory_item ON film.id = inventory_item.film_id "
+//					+ "WHERE title LIKE ? OR description LIKE ? ORDER BY store_id";
+//			PreparedStatement stmt = conn.prepareStatement(sqlText);
+//			stmt.setString(1, "%" + keyword + "%");
+//			stmt.setString(2, "%" + keyword + "%");
+//			ResultSet filmResult = stmt.executeQuery();
+//
+//			while (filmResult.next()) {
+//				Film film = new Film();
+//				film.setId(filmResult.getInt("film id"));
+//				film.setTitle(filmResult.getString("title"));
+//				film.setDescription(filmResult.getString("description"));
+//				film.setReleaseYear(filmResult.getInt("release_year"));
+//				film.setLanguageId(filmResult.getInt("language_id"));
+//				film.setLanguage(filmResult.getString("language"));
+//				film.setRentalDuration(filmResult.getInt("rental_duration"));
+//				film.setRentalRate(filmResult.getDouble("rental_rate"));
+//				film.setLength(filmResult.getInt("length"));
+//				film.setReplacementCost(filmResult.getDouble("replacement_cost"));
+//				film.setRating(filmResult.getString("rating"));
+//				film.setSpecialFeatures(filmResult.getString("special_features"));
+//				film.setActors(findActorsByFilmId(filmResult.getInt("film id")));
+//				film.setCategory(filmResult.getString("category"));
+//				film.setStoreId(filmResult.getInt("store_id"));
+//				film.setMediaCondition(filmResult.getString("media_condition"));
+//				films.add(film);
+//			}
+//		}
+//
+//		catch (SQLException e) {
+//			System.err.println("Error finding films with " + keyword);
+//			e.printStackTrace();
+//		}
+//		return films;
+//	}
+
+	
 	public List<Film> getInventoryCondition (int filmId) {
 		List<Film> filmInventory = new ArrayList<>();
 		try (Connection conn = DriverManager.getConnection(URL, user, pass)) {
-			String sqlText = "SELECT * FROM inventory_item WHERE film_id=?";
+			String sqlText = "SELECT * FROM inventory_item WHERE film_id=? ORDER BY store_id";
 			PreparedStatement stmt = conn.prepareStatement(sqlText);
 			stmt.setInt(1, filmId);
 			ResultSet rs = stmt.executeQuery();
